@@ -5,25 +5,71 @@
 
 using namespace std ;
 
-#define LED0_PATH "/sys/class/leds/beaglebone:green:usr0"
+#define LED_PATH "/sys/class/leds/beaglebone:green:usr"
 
-int main(int argc, char* argv[])
+class LED
 {
-    std::fstream fs ;
-    
-    fs.open(LED0_PATH "/trigger", std::fstream::out) ;
-    fs << "none" ;
+    private :
+        string path ;
+        int number ;
+        void writeLED(string filename, string value) ;
+        void resetTrigger() ;
+    public :
+        LED(int led_number) ;
+        void on() ;
+        void off() ;
+        void blink(string delayms) ;
+} ;
+
+LED::LED(int led_number)
+{
+    number = led_number ;
+    path = LED_PATH + to_string(led_number) ;
+}
+
+void LED::writeLED(string filename, string value)
+{
+    ofstream fs ;
+    fs.open((path + filename).c_str()) ;
+    fs << value ;
     fs.close() ;
+}
+
+void LED::resetTrigger()
+{
+    writeLED("/trigger", "none") ;
+}
+
+void LED::on()
+{
+    resetTrigger() ;
+    writeLED("/brightness", "1") ;
+}
+
+void LED::off()
+{
+    resetTrigger() ;
+    writeLED("/brightness", "0") ;
+}
+
+void LED::blink(string delayms)
+{
+    writeLED("/trigger", "timer") ;
+    writeLED("/delay_on", delayms) ;
+    writeLED("/delay_off", delayms) ;
+}
+
+
+int main(int argc, char* [])
+{
+    LED led0 = LED(0) ;
     
     while(1) {
-        fs.open(LED0_PATH "/brightness", std::fstream::out) ;
-        fs << "1" ;
-        fs.close() ;
+        led0.on() ;
         sleep(1) ;
         
-        fs.open(LED0_PATH "/brightness", std::fstream::out) ;
-        fs << "0" ;
-        fs.close() ;
+        led0.off() ;
         sleep(1) ;
     }
 }
+

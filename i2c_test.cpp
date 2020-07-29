@@ -6,7 +6,6 @@
 using namespace std ;
 
 #define GET_PATH "i2cget -y 2"
-#define SET_PATH "i2cset -y 2"
 
 string deviceAddr = " 0x68" ;
 string ACC_X_H = " 0x3B" ;
@@ -16,18 +15,21 @@ string ACC_Y_L = " 0x3E" ;
 string ACC_Z_H = " 0x3F" ;
 string ACC_Z_L = " 0x40" ;
 
-string exec(const char* cmd) {
-    char buffer[128];
-    string result = "";
-    FILE* pipe = popen(cmd, "r");
-    if (!pipe) return "fail" ;
-    
-    while (fgets(buffer, sizeof buffer, pipe) != NULL) {
-        result += buffer;
+string exec(const char* cmd)
+{
+    char buffer[100] ;
+    string result = "" ;
+    FILE* pipe = popen(cmd, "r") ;
+    if (!pipe) {
+        return "fail" ;
     }
     
-    pclose(pipe);
-    return result;
+    while (fgets(buffer, sizeof buffer, pipe) != NULL) {
+        result += buffer ;
+    }
+    
+    pclose(pipe) ;
+    return result ;
 }
 
 int main(int argc, char* [])

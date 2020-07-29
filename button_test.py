@@ -9,6 +9,6 @@ while True :
         rc_led.red.off()
         
     if rc_button.pause.is_pressed() :
-        rc_led.green.on()
-    else :
-        rc_led.green.off()
+        rc_led.green.toggle()
+    
+    # time.sleep(0.5)

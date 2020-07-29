@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            hi templates    
+        </title>
+        <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    </head>
+    <body>
+        <div>
+            div value
+        </div>
+        hi this is hi templates <br/>
+        test 123
+        <button type="button">
+            Click
+        </button>
+        <br/>
+        data from {{value}} <br/>
+        no data {{noData}} <br/>
+        <span id=randomValue>no data</span>
+        <span id=btn1>btn1</span>
+        <span id=btn2>btn2</span>
+        <br/>
+        
+        <button type="button" onclick="led1()">
+            LED1
+        </button>
+        <button type="button" onclick="led2()">
+            LED2
+        </button>
+        <br/>
+        
+        <img src=" {{ url_for('frame')}} ">
+        
+        
+    </body>
+</html>
+
+<script type="text/javascript">
+    setInterval(value_update, 500) ;
+    
+    function value_update() {
+        $.getJSON("/button", function(data) {
+            console.log(data) ;
+            // $('#randomValue').text(data.random_value) ;
+            $('#btn1').text(data.btn1) ;
+            $('#btn2').text(data.btn2) ;
+        }) ;
+    }
+    
+    function led1() {
+        $.post("/led", {
+            "led" : "1"
+        }) ;
+    }
+    function led2() {
+        $.post("/led", {
+            "led" : "2"
+        }) ;
+    }
+    
+    
+</script>
